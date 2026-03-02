@@ -1,0 +1,12 @@
+{
+  "enabled": true,
+  "layout": "main-vertical",
+  "main_pane_size": 60,
+  "split": "auto",
+  "kill_on_finish": true,
+  "min_pane_lifetime_seconds": 3,
+  "auto_finish_hook": true,
+  "install_pane_exit_hook": true,
+  "title_prefix": "agent",
+  "state_dir": "tmux_agent_view/state"
+}

@@ -1,0 +1,9 @@
+*.png
+*.jpg
+*.jpeg
+
+.ruff_cache/
+ai_doc/
+
+tmux_agent_view/state/
+tmux_agent_view/bin/__pycache__/
