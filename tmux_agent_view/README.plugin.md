@@ -1,6 +1,6 @@
-# minimal_tmux_view_plugin (v1.0)
+# minimal_tmux_view_plugin
 
-Orchestrator内部のイベントを受けて、`tmux_agent_view/bin/agent_pane_manager.py` を呼び出すプラグインです。
+Orchestrator内部のイベントを受けて、`tmux_agent_view/bin/agent_pane_manager.py` を最小構成で呼び出すプラグインです。
 ユーザー手動コマンドなしで、子セッションのtmuxペーン起動と終了処理を行います。
 
 ## イベント対応表
@@ -8,8 +8,8 @@ Orchestrator内部のイベントを受けて、`tmux_agent_view/bin/agent_pane_
 | event | 条件 | 実行内容 |
 | --- | --- | --- |
 | `session.created` | `session.parentID` がある(子セッション) | `spawn --task-id <session.id> --agent <info.title or subagent> --cmd "opencode attach <serverUrl> --session <session.id>"` |
-| `session.status` | `status.type === "idle"` かつ spawn済みsession | `finish --task-id <session.id> --status done` |
-| `session.deleted` | spawn済みsession | `finish --task-id <session.id> --status done` を試行 |
+| `session.status` | `status.type === "idle"` | `finish --task-id <session.id> --status done` |
+| `session.deleted` | 常時(対象セッションあり) | `finish --task-id <session.id> --status done` を試行 |
 
 補足:
 - 重複起動防止のため、セッションIDごとの起動済み状態をメモリ内`Map`で保持します。
@@ -27,8 +27,6 @@ Orchestrator内部のイベントを受けて、`tmux_agent_view/bin/agent_pane_
   - 指定時のみ `--config <path>` を付与。
 - `TMUX_VIEW_SERVER_URL` (optional)
   - `opencode attach` 先URLを明示指定する。ポート固定運用時に有効。
-- `TMUX_VIEW_DEBUG` (optional)
-  - `1`/`true` でデバッグログをstderrへ出力。
 
 ## 最小導入手順
 
@@ -36,16 +34,6 @@ Orchestrator内部のイベントを受けて、`tmux_agent_view/bin/agent_pane_
 2. 同スクリプトで `~/.config/opencode/plugins/minimal_tmux_view_plugin.js` も配置されるため、OpenCodeのローカルプラグイン自動読み込みで有効化される。
 3. 必要なら上記環境変数を設定する(未設定なら `~/.config/opencode/plugins/tmux_agent_view/` 配下の既定値で動作)。
 4. Orchestratorを再起動し、子セッション作成時にtmuxペーンが増えることを確認する。
-
-## 推奨起動
-
-ポートとtmux起動を集約したランチャーを推奨します。
-
-```bash
-tmux_agent_view/bin/opencode_tmux.sh --port 4096 --session-name oc
-```
-
-これにより `OPENCODE_PORT` と `TMUX_VIEW_SERVER_URL` の整合を取りやすくなります。
 
 ## 制約
 
