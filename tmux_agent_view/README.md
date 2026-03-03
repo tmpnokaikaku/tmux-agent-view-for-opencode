@@ -100,6 +100,29 @@ tmux_agent_view/bin/run_subagent.sh --agent coder-a --mode auto -- sleep 5
 4. `python3 -m py_compile tmux_agent_view/bin/agent_pane_manager.py` を実行して検証する。
 5. tmux内で `init` から動作確認する。
 
+## 起動の集約
+
+`tmux` 起動、`OPENCODE_PORT`、`TMUX_VIEW_SERVER_URL`、`opencode --port` を
+1コマンドにまとめるために、次を追加しています。
+
+```bash
+tmux_agent_view/bin/opencode_tmux.sh
+```
+
+- tmux外で実行した場合: 指定セッションを作成して `opencode --port <port>` を起動し、そのままattach
+- tmux内で実行した場合: 現在paneで `opencode --port <port>` を起動
+- 既定ポートは `4096`。`--port` で上書き可
+- 既定セッション名は `opencode-tmux`。`--session-name` で上書き可
+
+例:
+
+```bash
+tmux_agent_view/bin/opencode_tmux.sh --port 4096 --session-name oc
+```
+
+`opencode --tmux` のような単一コマンド体験に近づけるには、
+このスクリプトをシェルのエイリアス/関数へ割り当てます。
+
 ## プラグイン統合
 
 Orchestrator内部の自動起動イベントにフックする最小プラグインを追加しました。
